@@ -20,7 +20,7 @@ A voice-first farmer support prototype built with Gnani AI Speech APIs. Farmers 
 - **Prisma v3.0 REST** transcribes short recordings with `indic-auto` language detection. Prisma v2.5 is also selectable for a specified language.
 - **Speech locales:** Bengali, English, Gujarati, Hindi, Kannada, Malayalam, Marathi, Punjabi, Tamil and Telugu. Prisma v3.0 also accepts up to four comma-separated language hints; the UI includes Indic-English pairs.
 - **Timbre v3.0 REST** reads responses aloud in the selected language using the universal voice catalog. Hinglish speech uses Timbre's documented `auto` language mode.
-- **Evon v3.3** generates separate text and spoken translations when its requested weights are running locally behind an OpenAI-compatible loopback endpoint. Its response must contain JSON string fields `text` and `spokenText`. Set `EVON_BASE_URL` and `EVON_MODEL_ID` in `.env.local`; no additional API key is used. The server rejects remote Evon URLs.
+- **Evon v3.3** generates separate text and spoken translations when its requested weights are running behind an OpenAI-compatible inference endpoint. Its response must contain JSON string fields `text` and `spokenText`. Locally, use a loopback URL in `.env.local`; on Vercel, use an HTTPS endpoint you manage. No additional API key is used by this project.
 - The Vachana API key stays on the server in `.env.local` as `VACHANA_API_KEY_ID` and is never sent to the browser.
 - **Evon weights are not installed by default.** Request the official weights and run a local inference server before expecting model-generated, translated answers or non-English voice output.
 - Agent Builder is not used.
@@ -31,10 +31,23 @@ A voice-first farmer support prototype built with Gnani AI Speech APIs. Farmers 
 2. Start the server with `node server.mjs`.
 3. Open `http://127.0.0.1:8000`.
 
+## Deploy to Vercel
+
+1. Import `Pavan2207/rythu-ai` from GitHub.
+2. Use Framework Preset **Other**, Root Directory `./`, Build Command blank, Install Command blank, and Output Directory `.`. `vercel.json` sets these defaults.
+3. In Project Settings → Environment Variables, add `VACHANA_API_KEY_ID` as a Secret for Production and Preview. Add Development only if using `vercel dev`.
+4. Use a rotated key. Do not paste the contents of `.env.local` or `.env.example` into Vercel; the example includes a local-only Evon URL.
+5. Deploy. Changes to Vercel environment variables require a new deployment.
+
+Optional cross-language Evon responses need self-hosted weights behind an HTTPS endpoint reachable from Vercel. Do not use `127.0.0.1` for the deployed project; that address would refer to the Vercel function itself.
+
 ## Project Files
 
 - `index.html` — farmer dashboard, voice controls and feature catalog.
 - `server.mjs` — local web server and server-side Gnani Speech/Evon proxies.
+- `api/*.mjs` — Vercel serverless endpoints for Gnani Speech and optional Evon.
+- `lib/gnani-api.mjs` — shared Web-standard request handlers used by Vercel functions.
+- `vercel.json` — no-build static-site and function configuration.
 - `.env.example` — variable names for the Vachana key and optional local Evon endpoint.
 - `.env.local` — private local configuration; ignored by Git and never served by the app.
 - `README.md` — setup instructions, feature list and integration limits.
