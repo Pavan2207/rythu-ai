@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#183c2b">
+  <title>Rythu AI | Your field companion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --forest: #183c2b;
+      --forest-2: #244e38;
+      --leaf: #d7ed77;
+      --paper: #f5f5ee;
+      --white: #fffefa;
+      --ink: #1d2b22;
+      --muted: #748077;
+      --line: #e5e8df;
+      --orange: #e87743;
+      --blue: #dcebf0;
+      --shadow: 0 16px 46px rgba(34, 50, 37, .08);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--paper); font-family: "DM Sans", sans-serif; font-size: 14px; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .shell { min-height: 100vh; display: grid; grid-template-columns: 238px minmax(0, 1fr); }
+    .sidebar { position: sticky; top: 0; height: 100vh; padding: 27px 16px 20px; color: #f7f8f2; background: var(--forest); display: flex; flex-direction: column; }
+    .brand { display: flex; align-items: center; gap: 11px; padding: 0 10px 31px; }
+    .brand-mark { width: 37px; height: 37px; border-radius: 12px; color: var(--forest); background: var(--leaf); display: grid; place-items: center; }
+    .brand-name { font-family: Fraunces, serif; font-size: 22px; line-height: 1; letter-spacing: 0; }
+    .brand-caption { margin-top: 5px; color: #a9b9ad; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
+    .nav-label { padding: 0 12px 10px; color: #94a99a; font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+    .nav { display: grid; gap: 5px; }
+    .nav a { min-height: 43px; padding: 0 12px; color: #c5d0c8; text-decoration: none; display: flex; gap: 12px; align-items: center; border-radius: 8px; transition: background .2s, color .2s; }
+    .nav a:hover, .nav a.active { color: #fff; background: rgba(255,255,255,.1); }
+    .nav a.active { box-shadow: inset 3px 0 var(--leaf); }
+    .sidebar-spacer { flex: 1; }
+    .stack-note { padding: 14px; border: 1px solid rgba(255,255,255,.13); border-radius: 9px; background: rgba(255,255,255,.04); }
+    .stack-note-top { display: flex; align-items: center; justify-content: space-between; font-size: 11px; font-weight: 700; }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--leaf); box-shadow: 0 0 0 4px rgba(215,237,119,.12); }
+    .stack-note p { margin: 8px 0 0; color: #adc0b3; font-size: 11px; line-height: 1.55; }
+    .profile { margin: 18px 4px 0; padding: 14px 5px 0; border-top: 1px solid rgba(255,255,255,.14); display: flex; gap: 10px; align-items: center; }
+    .avatar { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; background: #e5a56d; color: #3a2819; font-weight: 700; }
+    .profile strong { display: block; font-size: 12px; }
+    .profile small { color: #a9b9ad; font-size: 10px; }
+    .main { min-width: 0; padding: 0 36px 50px; }
+    .topbar { height: 73px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); }
+    .crumb { color: var(--muted); font-size: 12px; }
+    .top-actions { display: flex; gap: 10px; align-items: center; }
+    .icon-button { width: 36px; height: 36px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 8px; background: var(--white); color: var(--ink); }
+    .language { height: 36px; padding: 0 30px 0 11px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--white); }
+    .language-control { display: flex; align-items: center; gap: 5px; color: #788278; font-size: 9px; font-weight: 700; }
+    .language-control .language { width: 88px; padding-left: 7px; padding-right: 21px; font-size: 11px; }
+    .page { width: min(1200px, 100%); margin: 0 auto; }
+    .welcome { display: flex; justify-content: space-between; align-items: end; padding: 29px 0 21px; }
+    .eyebrow { color: #637568; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    h1 { margin: 6px 0 0; font-family: Fraunces, serif; font-size: 34px; line-height: 1.1; font-weight: 500; letter-spacing: 0; }
+    .welcome-meta { display: flex; align-items: center; gap: 15px; color: #5f6e63; font-size: 12px; }
+    .weather-inline { display: flex; gap: 7px; align-items: center; }
+    .weather-inline strong { color: var(--ink); font-size: 15px; }
+    .weather-inline .sun { color: #d79335; }
+    .location { display: flex; gap: 5px; align-items: center; padding-left: 14px; border-left: 1px solid #dfe3d9; }
+    .hero { min-height: 222px; padding: 29px 32px; border-radius: 10px; color: white; background: var(--forest-2) url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1800&q=85") center 54% / cover; position: relative; overflow: hidden; display: flex; align-items: center; }
+    .hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(17,48,31,.96) 0%, rgba(19,54,34,.82) 48%, rgba(20,54,34,.15) 100%); }
+    .hero-copy { position: relative; z-index: 1; max-width: 520px; }
+    .hero-kicker { color: var(--leaf); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+    .hero h2 { margin: 10px 0 8px; font-family: Fraunces, serif; font-size: clamp(26px, 3vw, 36px); line-height: 1.08; font-weight: 500; letter-spacing: 0; }
+    .hero p { margin: 0; max-width: 420px; color: #d9e3da; line-height: 1.6; font-size: 13px; }
+    .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-top: 18px; }
+    .hero-cta { min-height: 46px; margin-top: 18px; padding: 0 16px; display: inline-flex; gap: 8px; align-items: center; border: 0; border-radius: 7px; color: var(--forest); background: var(--leaf); font-size: 13px; font-weight: 700; }
+    .hero-actions .hero-cta { margin-top: 0; }
+    .hero-download { min-height: 39px; padding: 0 12px; display: inline-flex; gap: 7px; align-items: center; border: 1px solid rgba(255,255,255,.55); border-radius: 7px; color: #fff; background: rgba(15,35,23,.2); text-decoration: none; font-size: 11px; font-weight: 700; }
+    .hero-download:hover { background: rgba(255,255,255,.12); }
+    .hero-build-note { margin: 8px 0 0; color: #d5e0d6; font-size: 10px; }
+    .section-heading { margin: 27px 0 13px; display: flex; align-items: end; justify-content: space-between; }
+    .section-heading h2 { margin: 0; font-family: Fraunces, serif; font-size: 22px; font-weight: 500; letter-spacing: 0; }
+    .section-heading p { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
+    .text-link { padding: 4px 0; border: 0; background: none; color: var(--forest-2); font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+    .workspace-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(270px, .85fr); gap: 15px; align-items: stretch; }
+    .panel { border: 1px solid var(--line); border-radius: 9px; background: var(--white); }
+    .doctor { padding: 19px; }
+    .panel-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .panel-title { display: flex; align-items: center; gap: 9px; font-size: 13px; font-weight: 700; }
+    .panel-icon { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; color: #335b3e; background: #e8efdf; }
+    .badge { padding: 5px 8px; border: 1px solid #e6e9e1; border-radius: 30px; color: #6d786e; font-size: 10px; white-space: nowrap; }
+    .prompt-label { display: block; margin: 17px 0 7px; color: #667369; font-size: 11px; font-weight: 600; }
+    .prompt-wrap { display: flex; gap: 8px; align-items: center; }
+    .prompt-input { width: 100%; min-width: 0; height: 44px; padding: 0 12px; border: 1px solid #dfe4da; border-radius: 7px; outline: none; color: var(--ink); background: #fff; }
+    .prompt-input:focus, input:focus, select:focus { border-color: #709b66; box-shadow: 0 0 0 3px rgba(112,155,102,.14); outline: none; }
+    .round-action { flex: 0 0 42px; width: 42px; height: 42px; border: 1px solid #dfe4da; border-radius: 7px; color: var(--forest); background: #f7f8f3; display: grid; place-items: center; }
+    .round-action.recording { color: #fff; border-color: #bd5538; background: #bd5538; animation: pulse 1.1s infinite; }
+    .voice-record { min-height: 43px; }
+    .voice-record.recording { background: #bd5538; }
+    .transcript-preview { margin: 15px 0 0; padding: 11px 12px; border-left: 3px solid #d5e0c3; color: #647166; background: #f8f9f4; font-size: 11px; line-height: 1.5; }
+    .voice-help { margin-top: 8px; color: #879187; font-size: 10px; }
+    @keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(189,85,56,.15); } }
+    .prompt-tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px; align-items: center; justify-content: space-between; }
+    .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+    .chip { padding: 6px 9px; border: 1px solid #e5e8df; border-radius: 30px; background: #fbfcf8; color: #617065; font-size: 10px; }
+    .upload-button { display: inline-flex; gap: 6px; align-items: center; color: #58675c; font-size: 11px; font-weight: 600; cursor: pointer; }
+    .upload-button input { display: none; }
+    .analyze { min-height: 39px; margin-top: 15px; padding: 0 13px; display: inline-flex; gap: 8px; align-items: center; border: 0; border-radius: 7px; color: white; background: var(--forest); font-size: 11px; font-weight: 700; }
+    .analysis-output { display: none; margin-top: 15px; padding: 13px; border: 1px solid #dce7d4; border-radius: 7px; background: #f6f9f1; }
+    .analysis-output.show { display: block; animation: reveal .25s ease-out; }
+    @keyframes reveal { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .analysis-output strong { display: block; font-size: 12px; }
+    .analysis-output p { margin: 6px 0 9px; color: #58675b; font-size: 11px; line-height: 1.55; }
+    .analysis-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #788378; font-size: 10px; }
+    .speak-button { display: inline-flex; gap: 5px; align-items: center; padding: 5px 8px; border: 1px solid #dae3d3; border-radius: 6px; color: var(--forest); background: white; font-size: 10px; font-weight: 700; }
+    .condition { padding: 17px; }
+    .condition-banner { margin-top: 15px; min-height: 104px; padding: 15px; border-radius: 8px; background: var(--blue); display: flex; justify-content: space-between; align-items: center; overflow: hidden; }
+    .condition-banner small { color: #58727a; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+    .condition-banner strong { display: block; margin: 6px 0 2px; font-family: Fraunces, serif; font-size: 28px; font-weight: 500; }
+    .condition-banner span { color: #526970; font-size: 11px; }
+    .condition-banner .cloud { color: #537783; }
+    .forecast { margin-top: 12px; display: grid; grid-template-columns: repeat(3, 1fr); }
+    .forecast div { text-align: center; color: #748077; font-size: 10px; }
+    .forecast div + div { border-left: 1px solid var(--line); }
+    .forecast i { margin: 5px 0; color: #ad8b3c; }
+    .forecast b { display: block; color: var(--ink); font-size: 11px; }
+    .weather-tip { margin-top: 13px; padding: 10px 11px; border-radius: 6px; color: #645338; background: #fff4dc; font-size: 10px; line-height: 1.5; display: flex; gap: 8px; }
+    .stt-options { margin-top: 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .stt-options label { color: #788278; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+    .stt-options select { height: 29px; margin-left: 5px; padding: 0 7px; border: 1px solid var(--line); border-radius: 6px; color: #45554a; background: white; font-size: 10px; }
+    .record-status { color: #7a857c; font-size: 10px; }
+    .market-panel { overflow: hidden; }
+    .market-head { padding: 16px 18px 13px; display: flex; justify-content: space-between; align-items: start; }
+    .market-head h3, .utility-head h3 { margin: 0; font-family: Fraunces, serif; font-size: 18px; font-weight: 500; }
+    .market-head p, .utility-head p { margin: 4px 0 0; color: var(--muted); font-size: 10px; }
+    .market-controls { display: flex; gap: 7px; align-items: center; }
+    .market-controls select { max-width: 130px; height: 31px; padding: 0 23px 0 8px; border: 1px solid var(--line); border-radius: 6px; color: #45554a; background: white; font-size: 10px; }
+    .demo-badge { color: #8d6a2b; padding: 5px 7px; border-radius: 5px; background: #fff4dc; font-size: 9px; font-weight: 700; text-transform: uppercase; white-space: nowrap; }
+    .market-table { width: 100%; border-collapse: collapse; text-align: left; }
+    .market-table th { padding: 9px 18px; border-top: 1px solid #eef0ea; border-bottom: 1px solid #eef0ea; color: #88938a; font-size: 9px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+    .market-table td { padding: 11px 18px; border-bottom: 1px solid #f0f1ec; font-size: 11px; }
+    .market-table tr:last-child td { border-bottom: 0; }
+    .crop-cell { display: flex; align-items: center; gap: 8px; font-weight: 700; }
+    .crop-dot { width: 7px; height: 7px; border-radius: 50%; background: #cf9a43; }
+    .trend-up { color: #397c53; font-weight: 700; }
+    .trend-down { color: #bb644c; font-weight: 700; }
+    .market-foot { padding: 11px 18px; border-top: 1px solid #edf0e9; color: #808a80; font-size: 10px; display: flex; justify-content: space-between; gap: 8px; }
+    .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+    .utility { padding: 17px; }
+    .utility-head { display: flex; justify-content: space-between; align-items: start; }
+    .utility-icon { width: 31px; height: 31px; border-radius: 8px; display: grid; place-items: center; color: #90553c; background: #fae9df; }
+    .doc-drop { margin-top: 14px; padding: 13px; border: 1px dashed #cbd4c8; border-radius: 7px; background: #fafbf7; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .doc-drop p { margin: 0; color: #68756b; font-size: 10px; line-height: 1.5; }
+    .doc-drop strong { color: var(--ink); }
+    .small-button { flex: 0 0 auto; padding: 8px 10px; border: 1px solid #dfe5dc; border-radius: 6px; color: var(--forest); background: white; font-size: 10px; font-weight: 700; cursor: pointer; }
+    .doc-result { display: none; margin-top: 11px; padding: 10px 11px; border-radius: 6px; background: #f4f7ed; color: #59665a; font-size: 10px; line-height: 1.55; }
+    .doc-result.show { display: block; }
+    .doc-result ul { margin: 5px 0 0; padding-left: 17px; }
+    .calc-form { margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; align-items: end; }
+    .field label { display: block; margin-bottom: 5px; color: #788278; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+    .field input, .field select { width: 100%; height: 35px; padding: 0 8px; border: 1px solid #dfe4da; border-radius: 6px; color: var(--ink); background: white; font-size: 11px; }
+    .calc-result { margin-top: 11px; padding: 10px 11px; border-radius: 6px; background: #f3f6e9; color: #4e614d; font-size: 10px; line-height: 1.5; }
+    .calc-result strong { color: var(--forest); }
+    .demo-section { margin: 30px 0 0; padding: 22px 22px 20px; border-radius: 9px; color: white; background: #254432; }
+    .demo-title { display: flex; align-items: end; justify-content: space-between; gap: 15px; }
+    .demo-title .eyebrow { color: var(--leaf); }
+    .demo-title h2 { margin: 5px 0 0; font-family: Fraunces, serif; font-size: 22px; font-weight: 500; letter-spacing: 0; }
+    .demo-title > span { color: #b7c8bb; font-size: 10px; }
+    .timeline { margin-top: 22px; display: grid; grid-template-columns: repeat(5, 1fr); }
+    .timeline-step { min-height: 89px; padding: 0 13px; border-left: 1px solid rgba(255,255,255,.22); }
+    .timeline-step:first-child { padding-left: 0; border-left: 0; }
+    .timeline-step time { color: var(--leaf); font-size: 10px; font-weight: 700; }
+    .timeline-step strong { display: block; margin: 7px 0 5px; font-size: 11px; }
+    .timeline-step p { margin: 0; color: #c3d0c6; font-size: 10px; line-height: 1.5; }
+    .disclaimer { margin: 15px 0 0; color: #89938a; font-size: 9px; line-height: 1.5; }
+    .feature-catalog { margin-top: 31px; }
+    .feature-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
+    .feature-card { min-width: 0; min-height: 136px; padding: 13px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--white); text-align: left; transition: transform .18s, border-color .18s, box-shadow .18s; }
+    .feature-card:hover { transform: translateY(-2px); border-color: #b7c8ae; box-shadow: 0 8px 22px rgba(34,50,37,.06); }
+    .feature-card-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .feature-number { color: #7e8d80; font-size: 10px; font-weight: 700; }
+    .feature-state { max-width: 140px; overflow: hidden; padding: 4px 6px; border-radius: 20px; color: #596a5c; background: #eef2e8; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+    .feature-card strong { display: block; margin-top: 11px; font-size: 12px; line-height: 1.3; }
+    .feature-card p { margin: 5px 0 0; color: #758076; font-size: 10px; line-height: 1.45; }
+    .feature-card .feature-arrow { margin-top: 9px; color: var(--forest-2); }
+    .integration-state { color: #d7ed77; font-size: 9px; font-weight: 700; }
+    .feature-dialog { width: min(520px, calc(100vw - 28px)); max-height: min(84vh, 690px); padding: 0; border: 1px solid #dfe5dc; border-radius: 10px; color: var(--ink); background: var(--white); box-shadow: 0 24px 80px rgba(12,30,18,.24); }
+    .feature-dialog::backdrop { background: rgba(15,35,23,.54); backdrop-filter: blur(3px); }
+    .dialog-content { padding: 24px; }
+    .dialog-close { float: right; width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 7px; color: var(--ink); background: white; }
+    .dialog-kicker { color: #718071; font-size: 10px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+    .dialog-content h2 { margin: 8px 38px 7px 0; font-family: Fraunces, serif; font-size: 26px; font-weight: 500; line-height: 1.1; }
+    .dialog-content > p { color: #647166; font-size: 12px; line-height: 1.6; }
+    .dialog-stack { margin: 16px 0; padding: 12px; border-radius: 7px; color: #58675b; background: #f1f4ec; font-size: 10px; line-height: 1.55; }
+    .dialog-stack strong { display: block; margin-bottom: 4px; color: #314a37; }
+    .preview-form { margin-top: 15px; padding-top: 14px; border-top: 1px solid var(--line); }
+    .preview-form .field { margin-bottom: 10px; }
+    .preview-result { min-height: 36px; margin-top: 10px; padding: 10px; border-radius: 6px; color: #536352; background: #f2f6e8; font-size: 11px; line-height: 1.5; }
+    .integration-pending { margin-top: 15px; padding: 11px 12px; border: 1px solid #f0dfb6; border-radius: 7px; color: #725e36; background: #fff8e9; font-size: 10px; line-height: 1.55; }
+    .toast { position: fixed; right: 22px; bottom: 20px; z-index: 10; max-width: min(360px, calc(100vw - 32px)); padding: 12px 15px; border-radius: 7px; color: white; background: #263d2d; box-shadow: var(--shadow); font-size: 12px; opacity: 0; transform: translateY(8px); pointer-events: none; transition: .2s; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .mobile-brand { display: none; }
+    @media (max-width: 980px) {
+      .shell { grid-template-columns: 205px minmax(0, 1fr); }
+      .main { padding: 0 22px 36px; }
+      .workspace-grid { grid-template-columns: 1fr; }
+      .condition { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+      .condition .panel-top { grid-column: 1 / -1; }
+      .condition-banner { margin-top: 12px; }
+      .forecast { align-self: center; }
+      .weather-tip { grid-column: 1 / -1; }
+    }
+    @media (max-width: 700px) {
+      .shell { display: block; padding-bottom: 62px; }
+      .sidebar { position: fixed; z-index: 5; top: auto; right: 0; bottom: 0; left: 0; width: 100%; height: 59px; padding: 5px 8px; flex-direction: row; align-items: center; box-shadow: 0 -7px 24px rgba(25,49,32,.12); }
+      .brand, .nav-label, .sidebar-spacer, .stack-note, .profile { display: none; }
+      .nav { width: 100%; grid-template-columns: repeat(6, 1fr); gap: 2px; }
+      .nav a { min-height: 48px; padding: 4px 2px; flex-direction: column; justify-content: center; gap: 3px; border-radius: 6px; font-size: 9px; }
+      .nav a.active { box-shadow: inset 0 2px var(--leaf); }
+      .nav a svg { width: 17px; height: 17px; }
+      .main { padding: 0 15px 30px; }
+      .topbar { height: 58px; }
+      .mobile-brand { display: flex; align-items: center; gap: 7px; color: var(--forest); font-family: Fraunces, serif; font-size: 19px; }
+      .mobile-brand .brand-mark { width: 28px; height: 28px; border-radius: 8px; }
+      .crumb { display: none; }
+      .top-actions { gap: 6px; }
+      .language { width: 83px; padding-left: 7px; font-size: 11px; }
+      .language-control { gap: 3px; font-size: 8px; }
+      .language-control .language { width: 76px; padding-left: 5px; padding-right: 17px; font-size: 10px; }
+      .icon-button { width: 33px; height: 33px; }
+      .welcome { padding: 23px 0 17px; display: block; }
+      h1 { font-size: 29px; }
+      .welcome-meta { margin-top: 12px; justify-content: space-between; }
+      .hero { min-height: 224px; padding: 23px 20px; background-position: 58% center; }
+      .hero::before { background: linear-gradient(90deg, rgba(17,48,31,.94), rgba(19,54,34,.69)); }
+      .hero p { font-size: 12px; }
+      .section-heading { margin-top: 23px; }
+      .bottom-grid { grid-template-columns: 1fr; }
+      .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .feature-card { min-height: 145px; padding: 11px; }
+      .condition { display: block; }
+      .forecast { margin-top: 13px; }
+      .market-head { padding: 14px; gap: 6px; flex-direction: column; }
+      .market-table th, .market-table td { padding: 10px 9px; }
+      .market-table th { font-size: 8px; }
+      .market-table td { font-size: 10px; }
+      .market-foot { padding: 10px 12px; font-size: 9px; }
+      .calc-form { grid-template-columns: 1fr 1fr; }
+      .calc-form .field:last-child { grid-column: 1 / -1; }
+      .timeline { grid-template-columns: 1fr; gap: 0; }
+      .timeline-step { min-height: 0; padding: 0 0 13px 15px; border-left: 1px solid rgba(255,255,255,.22); }
+      .timeline-step:first-child { padding-left: 15px; border-left: 1px solid rgba(255,255,255,.22); }
+      .timeline-step:last-child { padding-bottom: 0; }
+      .timeline-step::before { content: ""; position: absolute; width: 7px; height: 7px; margin: 3px 0 0 -19px; border-radius: 50%; background: var(--leaf); }
+      .demo-title { align-items: start; flex-direction: column; gap: 6px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <div class="brand"><div class="brand-mark"><i data-lucide="sprout" width="21" height="21"></i></div><div><div class="brand-name">Rythu AI</div><div class="brand-caption">Your field companion</div></div></div>
+      <div class="nav-label">Farm desk</div>
+      <nav class="nav">
+        <a class="active" href="#overview"><i data-lucide="layout-dashboard" width="17"></i><span>Overview</span></a>
+        <a href="#doctor"><i data-lucide="stethoscope" width="17"></i><span>Plant doctor</span></a>
+        <a href="#markets"><i data-lucide="chart-no-axes-combined" width="17"></i><span>Mandi prices</span></a>
+        <a href="#documents"><i data-lucide="files" width="17"></i><span>Documents</span></a>
+        <a href="#calculator"><i data-lucide="calculator" width="17"></i><span>Crop calculator</span></a>
+        <a href="#all-tools"><i data-lucide="grid-2x2" width="17"></i><span>All tools</span></a>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="stack-note"><div class="stack-note-top"><span>Gnani voice stack</span><span class="integration-state" id="integrationState">Checking</span></div><p id="integrationNote">Prisma v3.0 + Timbre v3.0. Add a local API key to enable live speech calls.</p></div>
+      <div class="profile"><div class="avatar">RK</div><div><strong>Ramesh Kumar</strong><small>Guntur, Andhra Pradesh</small></div></div>
+    </aside>
+
+    <main class="main" id="overview">
+      <header class="topbar">
+        <div class="mobile-brand"><span class="brand-mark"><i data-lucide="sprout" width="17"></i></span>Rythu AI</div>
+        <div class="crumb">Farm desk <span aria-hidden="true">/</span> Overview</div>
+        <div class="top-actions">
+          <button class="icon-button" id="helpButton" aria-label="About this demo" title="About this demo"><i data-lucide="circle-help" width="16"></i></button>
+          <label class="language-control">Text<select class="language" id="textLanguage" aria-label="Text answer language" title="Text answer language"><option value="en-IN">English</option><option value="te-IN">తెలుగు</option><option value="hi-IN">हिन्दी</option><option value="ta-IN">தமிழ்</option><option value="kn-IN">ಕನ್ನಡ</option><option value="ml-IN">മലയാളം</option><option value="mr-IN">मराठी</option><option value="pa-IN">ਪੰਜਾਬੀ</option><option value="bn-IN">বাংলা</option><option value="gu-IN">ગુજરાતી</option><option value="hi-en">Hinglish</option></select></label>
+          <label class="language-control">Voice<select class="language" id="language" aria-label="Spoken answer language" title="Spoken answer language"><option value="te-IN">తెలుగు</option><option value="hi-IN">हिन्दी</option><option value="en-IN">English</option><option value="ta-IN">தமிழ்</option><option value="kn-IN">ಕನ್ನಡ</option><option value="ml-IN">മലയാളം</option><option value="mr-IN">मराठी</option><option value="pa-IN">ਪੰਜਾਬੀ</option><option value="bn-IN">বাংলা</option><option value="gu-IN">ગુજરાતી</option><option value="hi-en">Hinglish</option></select></label>
+        </div>
+      </header>
+      <div class="page">
+        <section class="welcome">
+          <div><div class="eyebrow">Monday, 9 November 2026</div><h1>Good morning, Ramesh</h1></div>
+          <div class="welcome-meta"><div class="weather-inline"><i class="sun" data-lucide="sun" width="17"></i><strong>29°</strong><span>Partly cloudy</span></div><div class="location"><i data-lucide="map-pin" width="14"></i>Guntur, AP</div></div>
+        </section>
+
+        <section class="hero" aria-label="Farm assistant">
+          <div class="hero-copy"><div class="hero-kicker">VOICE-FIRST FARM SUPPORT</div><h2>Speak your question.<br>Get your next step.</h2><p>Crop, mandi, weather, scheme or loan. Choose your text and voice languages above; no typing is needed.</p><div class="hero-actions"><button class="hero-cta" id="voiceCommandButton"><i data-lucide="mic" width="17"></i>Start speaking</button><a class="hero-download" href="https://i.diawi.com/SczPfR" target="_blank" rel="noopener noreferrer"><i data-lucide="external-link" width="14"></i>JanMitra AI test app</a></div><p class="hero-build-note">Android test build · debug-signed</p></div>
+        </section>
+
+        <div class="section-heading"><div><h2>Your field, at a glance</h2><p>Local signals and practical tools for today's work.</p></div><button class="text-link" id="speakBrief"><i data-lucide="volume-2" width="14"></i>Listen to daily brief</button></div>
+
+        <div class="workspace-grid">
+          <section class="panel doctor" id="doctor">
+            <div class="panel-top"><div class="panel-title"><span class="panel-icon"><i data-lucide="scan-eye" width="16"></i></span>Voice field assistant</div><span class="badge">All tools · voice input</span></div>
+            <p class="prompt-label">Speak a question or name a tool: crop advice, mandi prices, weather, calculator, KCC, machinery, or storage.</p>
+            <button class="analyze voice-record" id="recordButton" aria-label="Start voice command" title="Start voice command"><i data-lucide="mic" width="15"></i>Start voice command</button>
+            <p class="transcript-preview" id="transcriptText" aria-live="polite">Your recognized words will appear here.</p>
+            <div class="voice-help">Input language and response language are selected separately above.</div>
+            <label class="upload-button"><i data-lucide="image-plus" width="15"></i><span id="plantPhotoName">Attach optional plant photo</span><input id="plantPhoto" type="file" accept="image/*"></label>
+            <div class="voice-help" id="plantPhotoStatus">Vision analysis is not connected; photo stays on this device.</div>
+            <div class="stt-options"><label>Prisma <select id="sttModel" aria-label="Speech recognition model"><option value="prisma-v3.0">v3.0 · multilingual</option><option value="prisma-v2.5">v2.5 · one language</option></select></label><label>Audio language <select id="sttLanguage" aria-label="Spoken language"><optgroup label="Detection"><option value="indic-auto">Auto detect (v3.0)</option></optgroup><optgroup label="Single language"><option value="te-IN">Telugu</option><option value="hi-IN">Hindi</option><option value="en-IN">English</option><option value="ta-IN">Tamil</option><option value="kn-IN">Kannada</option><option value="ml-IN">Malayalam</option><option value="mr-IN">Marathi</option><option value="pa-IN">Punjabi</option><option value="bn-IN">Bengali</option><option value="gu-IN">Gujarati</option></optgroup><optgroup label="Code-mixed · Prisma v3.0"><option value="te-IN,en-IN">Telugu + English</option><option value="hi-IN,en-IN">Hindi + English</option><option value="ta-IN,en-IN">Tamil + English</option><option value="kn-IN,en-IN">Kannada + English</option><option value="ml-IN,en-IN">Malayalam + English</option><option value="mr-IN,en-IN">Marathi + English</option><option value="pa-IN,en-IN">Punjabi + English</option><option value="bn-IN,en-IN">Bengali + English</option><option value="gu-IN,en-IN">Gujarati + English</option></optgroup></select></label><span class="record-status" id="recordStatus">Ready for a short clip</span></div>
+            <div class="analysis-output" id="analysisOutput" aria-live="polite"><strong id="analysisTitle">Field guidance</strong><p id="analysisText"></p><div class="analysis-footer"><span id="analysisSource">Text-only triage · not a diagnosis or pesticide prescription</span><button class="speak-button" id="speakAdvice"><i data-lucide="volume-2" width="13"></i>Listen</button></div></div>
+          </section>
+          <section class="panel condition" id="weather">
+            <div class="panel-top"><div class="panel-title"><span class="panel-icon" style="background:#e5f0f2;color:#426b78"><i data-lucide="cloud-sun" width="16"></i></span>Village weather</div><span class="badge">Guntur · Demo</span></div>
+            <div class="condition-banner"><div><small>Today · 2:30 PM</small><strong>29°</strong><span>Partly cloudy · Humidity 68%</span></div><i class="cloud" data-lucide="cloud-sun" width="46" height="46"></i></div>
+            <div class="forecast"><div>Now<i data-lucide="sun" width="15"></i><b>29°</b></div><div>4 PM<i data-lucide="cloud-sun" width="15"></i><b>27°</b></div><div>6 PM<i data-lucide="cloud-rain" width="15"></i><b>24°</b></div></div>
+            <div class="weather-tip"><i data-lucide="cloud-drizzle" width="14"></i><span>Possible evening shower. Avoid spraying just before rain; check a live local forecast before field work.</span></div>
+          </section>
+        </div>
+
+        <div class="section-heading" id="markets"><div><h2>Mandi watch</h2><p>Compare nearby sample rates before you decide.</p></div><button class="text-link" id="speakMarket"><i data-lucide="volume-2" width="14"></i>Read rates aloud</button></div>
+        <section class="panel market-panel">
+          <div class="market-head"><div><h3>Today's market snapshot</h3><p>Indicative demo data · verify with your APMC before selling</p></div><div class="market-controls"><span class="demo-badge">Sample rates</span><select id="commodity" aria-label="Voice-selected commodity" hidden><option value="Chilli">Red chilli</option><option value="Cotton">Cotton</option><option value="Paddy">Paddy</option></select></div></div>
+          <table class="market-table"><thead><tr><th>Mandi</th><th>Modal price</th><th>Change</th><th>Arrivals</th></tr></thead><tbody id="marketRows"></tbody></table>
+          <div class="market-foot"><span>Illustrative figures only; not a live feed or financial advice.</span><span>Updated for demo · 9:00 AM</span></div>
+        </section>
+
+        <div class="bottom-grid">
+          <section class="panel utility" id="documents">
+            <div class="utility-head"><div><h3>Paper to action</h3><p>Find key details in a scheme or insurance notice.</p></div><span class="utility-icon"><i data-lucide="file-search-2" width="16"></i></span></div>
+            <div class="doc-drop"><p><strong>Have a circular or form?</strong><br>Read out a question or attach an image for a future OCR flow.</p><label class="small-button">Attach image<input id="documentFile" type="file" accept="image/*,.pdf" hidden></label></div>
+            <p class="voice-help" id="documentFileStatus">OCR is not connected; selected files stay on this device.</p>
+            <div class="doc-result" id="documentResult" aria-live="polite"><strong>Example checklist preview</strong><ul><li>Check the application deadline on the original notice.</li><li>Keep land records and bank passbook details ready.</li><li>Confirm eligibility with your local agriculture office.</li></ul><span>Demo only: OCR is not connected and this file stays in your browser.</span></div>
+          </section>
+          <section class="panel utility" id="calculator">
+            <div class="utility-head"><div><h3>Seed & input calculator</h3><p>Estimate quantities from your plot size.</p></div><span class="utility-icon" style="color:#496d54;background:#e8efdf"><i data-lucide="calculator" width="16"></i></span></div>
+            <div hidden><input id="area" type="number" value="2"><select id="unit"><option value="acre">Acres</option><option value="gunta">Guntas</option><option value="bigha">Bighas</option><option value="cent">Cents</option></select><select id="crop"><option value="paddy">Paddy</option><option value="cotton">Cotton</option><option value="chilli">Chilli</option></select></div>
+            <div class="calc-result" id="calcResult" aria-live="polite"></div>
+          </section>
+        </div>
+
+        <section class="feature-catalog" id="all-tools">
+          <div class="section-heading"><div><h2>Ten farmer tools</h2><p>Choose a tool, then speak your request.</p></div><span class="badge">Voice-first toolkit</span></div>
+          <div class="feature-grid" id="featureGrid"></div>
+        </section>
+
+        <p class="disclaimer">Gnani-only AI prototype: Prisma v3.0 and Timbre v3.0 use Gnani Speech APIs. Crop answers are rule-based examples; Evon v3.3 weights are not installed. No Agent Builder or third-party AI is used. Mandi, weather, OCR, and agronomy data are samples or unconnected. Verify decisions with official local sources.</p>
+      </div>
+    </main>
+  </div>
+  <dialog class="feature-dialog" id="featureDialog" aria-labelledby="featureTitle">
+    <div class="dialog-content">
+      <button class="dialog-close" id="closeFeatureDialog" aria-label="Close"><i data-lucide="x" width="16"></i></button>
+      <div class="dialog-kicker" id="featureStatus"></div>
+      <h2 id="featureTitle"></h2>
+      <p id="featureDescription"></p>
+      <div class="dialog-stack"><strong>Technical integration</strong><span id="featureStack"></span></div>
+      <button class="analyze voice-record" id="dialogVoiceButton"><i data-lucide="mic" width="15"></i>Speak about this tool</button>
+      <div id="featurePreview"></div>
+    </div>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>
+    const featureCatalog = [
+      { id: 'plant', title: 'Voice-Activated Plant Doctor', description: 'Ask about crop symptoms by voice; an optional plant photo can be selected for future vision support.', stack: 'Prisma v3.0 · Vision OCR pending · ICAR treatment rules pending', status: 'Voice preview', target: '#doctor', note: 'Text triage is rule-based. Image vision and verified ICAR rules are not connected; no disease or pesticide dose is inferred from a photo.' },
+      { id: 'mandi', title: 'Multi-Mandi Live Price & Hold/Sell Advisor', description: 'Ask for commodity rates across nearby mandis and compare a sample snapshot.', stack: 'Prisma v3.0 · APMC Pricing RAG pending · Timbre v3.0 pending', status: 'Sample rates', target: '#markets', note: 'Mandi rates are illustrative, not live. No trend-based hold/sell recommendation is made.' },
+      { id: 'insurance', title: 'Paper-to-Action Crop Insurance & Subsidy Reader', description: 'Speak a notice question; optionally attach a circular image for future OCR support.', stack: 'Layout OCR pending · structural entity extraction pending · Timbre v3.0 pending', status: 'OCR pending', target: '#documents', note: 'This prototype does not read uploaded notices or verify deadlines, eligibility or required documents.' },
+      { id: 'climate', title: 'Hyper-Local Micro-Climate & Irrigation Voice Alerts', description: 'Ask about village weather and spray timing; the current panel is a sample only.', stack: 'Micro-climate API pending · voice alert generator · Timbre v3.0 pending', status: 'Sample weather', target: '#weather', note: 'Weather values are not live and are not village-verified.' },
+      { id: 'inputs', title: 'Voice-Powered Fertilizer & Seed Calculator', description: 'Speak plot size in acres, guntas or bighas to calculate sample seed and input estimates.', stack: 'Voice intent parser · local unit normalization · Timbre v3.0 pending', status: 'Working preview', target: '#calculator' },
+      { id: 'soil', title: 'Soil Health Card Nutrient Interpreter', description: 'Speak N-P-K values or optionally attach a soil-card image for future OCR support.', stack: 'Vision OCR pending · soil nutrient rules pending · Timbre v3.0 pending', status: 'OCR pending', note: 'No nutrient dose is generated; OCR and crop-specific nutrient rules are not connected.' },
+      { id: 'pest', title: 'Voice Pest Prevention Outbreak Alarm', description: 'Ask about regional pest threats; forecasting needs local outbreak and weather data.', stack: 'Prisma v3.0 · predictive pest weather matrix pending · Timbre v3.0 pending', status: 'Data pending', note: 'No pest risk is predicted. Do not apply preventive chemicals based on this preview.' },
+      { id: 'kcc', title: 'Precision Financial & Loan Subsidy Calculator', description: 'Speak principal and repayment days for an illustrative 4% simple-interest calculation.', stack: 'Financial formula parser · Timbre v3.0 pending', status: 'Formula preview', preview: 'kcc', note: 'This is not a bank quote. Confirm eligibility, subsidy and loan terms with your lender.' },
+      { id: 'organic', title: 'Voice Organic Pesticide Recipe & Guidance', description: 'Ask for organic crop-care guidance; verified recipes and safety sources are pending.', stack: 'Prisma v3.0 · verified organic agronomy database pending · Timbre v3.0 pending', status: 'Knowledge pending', note: 'No recipe or application dosage is provided until a verified agronomy source is connected.' },
+      { id: 'scribe', title: 'Dual-Party Audio Trade & Bargaining Scribe', description: 'Create a spoken draft of agreed terms; not a legal contract or speaker-verified record.', stack: 'Prisma v3.0 · dual-party diarization unavailable · state ledger pending', status: 'Transcript preview', note: 'Record only with both parties’ informed consent. The current REST transcription does not separate speakers or lock a transaction.' }
+    ];
+    function renderFeatureCatalog() {
+      document.querySelector('#featureGrid').innerHTML = featureCatalog.map((feature, index) => `<button class="feature-card" type="button" data-feature-id="${feature.id}"><span class="feature-card-top"><span class="feature-number">${String(index + 1).padStart(2, '0')}</span><span class="feature-state">${feature.status}</span></span><strong>${feature.title}</strong><p>${feature.description}</p><i class="feature-arrow" data-lucide="arrow-up-right" width="14"></i></button>`).join('');
+      if (window.lucide) lucide.createIcons();
+    }
+    function previewMarkup(kind) {
+      if (kind === 'yield') return '<div class="integration-pending">Speak your area, expected yield per acre, and worker-days per tonne. The estimate uses your assumptions only.</div>';
+      if (kind === 'kcc') return '<div class="integration-pending">Speak the principal and days outstanding for an illustrative simple-interest calculation. Confirm current terms with your bank.</div>';
+      if (kind === 'irrigation') return '<div class="integration-pending">Speak target water in litres and pump flow in litres per minute. This is arithmetic only, not a crop-stage recommendation.</div>';
+      if (kind === 'soil') return `<div class="integration-pending">Speak the N-P-K values or attach a soil-card image. OCR and nutrient recommendations are not connected.</div><label class="small-button">Attach soil card<input id="soilFile" type="file" accept="image/*,.pdf" hidden></label><div class="voice-help" id="soilFileStatus">File remains on this device; no OCR is performed.</div>`;
+      const feature = featureCatalog.find(item => item.id === document.querySelector('#featureDialog').dataset.featureId);
+      if (feature?.target) return `<div class="integration-pending">${feature.note || 'This workspace module is a sample workflow. Verify any decision with the relevant local authority.'}</div><a class="small-button dialog-action" href="${feature.target}">Open workspace module</a>`;
+      return `<div class="integration-pending">${feature?.note || 'This workflow needs an external provider and verified local data before it can return reliable results.'}</div>`;
+    }
+    function openFeature(feature) {
+      const dialog = document.querySelector('#featureDialog');
+      dialog.dataset.featureId = feature.id;
+      document.querySelector('#featureStatus').textContent = feature.status;
+      document.querySelector('#featureTitle').textContent = feature.title;
+      document.querySelector('#featureDescription').textContent = feature.description;
+      document.querySelector('#featureStack').textContent = feature.stack;
+      document.querySelector('#featurePreview').innerHTML = previewMarkup(feature.preview || feature.id);
+      dialog.showModal();
+      if (window.lucide) lucide.createIcons();
+    }
+
+    const marketData = {
+      Chilli: [{ mandi: 'Guntur', price: 18_450, change: 2.4, arrivals: '1,240 qtl' }, { mandi: 'Warangal', price: 17_900, change: 1.1, arrivals: '680 qtl' }, { mandi: 'Khammam', price: 18_100, change: -0.6, arrivals: '410 qtl' }],
+      Cotton: [{ mandi: 'Guntur', price: 7_180, change: 0.8, arrivals: '920 qtl' }, { mandi: 'Warangal', price: 7_050, change: -0.3, arrivals: '760 qtl' }, { mandi: 'Khammam', price: 7_120, change: 0.5, arrivals: '540 qtl' }],
+      Paddy: [{ mandi: 'Guntur', price: 2_340, change: 0.4, arrivals: '1,850 qtl' }, { mandi: 'Warangal', price: 2_290, change: 0.2, arrivals: '1,120 qtl' }, { mandi: 'Khammam', price: 2_310, change: -0.2, arrivals: '970 qtl' }]
+    };
+    const cropRates = { paddy: { seed: 24, bags: 2.2, cost: 800 }, cotton: { seed: 2, bags: 3, cost: 1450 }, chilli: { seed: .4, bags: 2, cost: 1100 } };
+    const language = document.querySelector('#language');
+    const toast = document.querySelector('#toast');
+    let toastTimer;
+    let activeVoiceFeature = null;
+    function notify(message) { toast.textContent = message; toast.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove('show'), 3200); }
+    async function speak(text, speechLanguage = language.value) {
+      try {
+        const response = await fetch('/api/tts', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text, language: speechLanguage }) });
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({}));
+          throw new Error(error.error || error.message || `Timbre request failed (${response.status}).`);
+        }
+        const audioUrl = URL.createObjectURL(await response.blob());
+        const player = new Audio(audioUrl);
+        player.addEventListener('ended', () => URL.revokeObjectURL(audioUrl), { once: true });
+        player.addEventListener('error', () => URL.revokeObjectURL(audioUrl), { once: true });
+        await player.play();
+      } catch (error) {
+        notify(error.message || 'Timbre is unavailable. Check the local server and Gnani configuration.');
+      }
+    }
+    function renderMarket() {
+      const rows = marketData[document.querySelector('#commodity').value];
+      document.querySelector('#marketRows').innerHTML = rows.map(row => `<tr><td><span class="crop-cell"><span class="crop-dot"></span>${row.mandi}</span></td><td>₹${row.price.toLocaleString('en-IN')}<small> / qtl</small></td><td class="${row.change >= 0 ? 'trend-up' : 'trend-down'}">${row.change >= 0 ? '+' : ''}${row.change.toFixed(1)}%</td><td>${row.arrivals}</td></tr>`).join('');
+    }
+    function updateCalculator() {
+      const area = Math.max(0, Number(document.querySelector('#area').value) || 0);
+      const unit = document.querySelector('#unit').value;
+      const crop = document.querySelector('#crop').value;
+      const acres = area * (unit === 'gunta' ? 1 / 40 : unit === 'bigha' ? 0.625 : unit === 'cent' ? 1 / 100 : 1);
+      const rates = cropRates[crop];
+      const seed = acres * rates.seed;
+      const bags = acres * rates.bags;
+      const cost = Math.round(bags * rates.cost);
+      const unitNote = unit === 'bigha' ? ' *Using a demo conversion of 1 bigha = 0.625 acre; local measures vary.' : '';
+      document.querySelector('#calcResult').innerHTML = `<strong>Estimate:</strong> about ${seed.toFixed(1)} kg seed · ${bags.toFixed(1)} fertilizer bags · ₹${cost.toLocaleString('en-IN')} input cost.${unitNote} Rates are placeholders; confirm crop, soil, and local recommendations.`;
+    }
+    renderMarket();
+    updateCalculator();
+    renderFeatureCatalog();
+    if (window.lucide) lucide.createIcons();
+
+    fetch('/api/status').then(response => response.json()).then(status => {
+      document.querySelector('#integrationState').textContent = status.evonConfigured ? 'Voice AI live' : status.gnaniConfigured ? 'Speech live' : 'Key needed';
+      document.querySelector('#integrationNote').textContent = status.gnaniConfigured
+        ? (status.evonConfigured ? 'Prisma, Timbre and local Evon are configured for separate text and voice languages.' : 'Prisma and Timbre are live. Add local Evon weights for translated answers.')
+        : 'Add VACHANA_API_KEY_ID to .env.local and restart the server to enable Gnani speech.';
+    }).catch(() => {
+      document.querySelector('#integrationState').textContent = 'Server needed';
+      document.querySelector('#integrationNote').textContent = 'Open this dashboard through server.mjs to use Gnani speech features.';
+    });
+
+    document.querySelector('#commodity').addEventListener('change', renderMarket);
+    ['area', 'unit', 'crop'].forEach(id => document.querySelector(`#${id}`).addEventListener('input', updateCalculator));
+    document.querySelector('#unit').addEventListener('change', updateCalculator);
+    document.querySelector('#crop').addEventListener('change', updateCalculator);
+    function showVoiceAnswer(title, text, source = 'Rule-based preview · not a live data result', textLanguage = 'en-IN', spokenText = text, speechLanguage = textLanguage) {
+      document.querySelector('#analysisTitle').textContent = title;
+      document.querySelector('#analysisText').textContent = text;
+      document.querySelector('#analysisSource').textContent = source;
+      document.querySelector('#analysisOutput').dataset.textLanguage = textLanguage;
+      document.querySelector('#analysisOutput').dataset.spokenText = spokenText;
+      document.querySelector('#analysisOutput').dataset.speechLanguage = speechLanguage;
+      document.querySelector('#analysisOutput').classList.add('show');
+    }
+    function detectVoiceFeature(query) {
+      const text = query.toLowerCase();
+      const rules = [
+        ['scribe', /bargain|deal|trade terms|agreement|record terms|buyer|seller|agreed|(?:price|₹|rupees?).{0,30}\bfor\s*\d+\s*(?:quintals?|qtl)\b/],
+        ['mandi', /mandi|market|price|rate|chilli|ధర|మండి|मंडी|भाव|விலை/],
+        ['climate', /weather|rain|humidity|spray|वर्षा|बारिश|వర్షం|மழை|ಮಳೆ/],
+        ['kcc', /\bkcc\b|loan|interest|subvention|किसान क्रेडिट|వడ్డీ/],
+        ['storage', /cold storage|warehouse|store crop|storage|గిడ్డంగి/],
+        ['machinery', /tractor|harvester|machinery|hire|rent machine|ట్రాక్టర్/],
+        ['soil', /soil health|soil card|npk|nitrogen|phosphorus|potassium|మట్టి కార్డు/],
+        ['insurance', /insurance|subsidy|pm.?kisan|passbook|scheme|deadline|భీమా|बीमा/],
+        ['irrigation', /irrigation|drip|pump|runtime|పంపు|సేద్యం/],
+        ['yield', /yield|harvest|tonne|tonnage|worker|labou?r|उपज|దిగుబడి/],
+        ['rotation', /rotation|next crop|nitrogen.?fix|తదుపరి పంట/],
+        ['organic', /neem|jeevamrutha|organic pesticide|జీవామృతం|வேம்பு/],
+        ['pest', /outbreak|pest alarm|pest risk|humidity pest/],
+        ['inputs', /fertili[sz]er|seed|acre|gunta|bigha|cent|calculator|ఎకర|బస్తా/],
+        ['plant', /cotton|paddy|rice|crop|leaf|leaves|pest|insect|red|spot|పత్తి|వరి|పంట|పురుగు|ఎర్ర|फसल|कीट/]
+      ];
+      for (const [id, pattern] of rules) {
+        if (pattern.test(text)) return featureCatalog.find(feature => feature.id === id) || featureCatalog[0];
+      }
+      return null;
+    }
+    async function handleVoiceCommand(query, detectedLanguage) {
+      const text = query.trim().toLowerCase();
+      if (!text) return;
+      const feature = activeVoiceFeature
+        ? featureCatalog.find(item => item.id === activeVoiceFeature)
+        : detectVoiceFeature(text);
+      activeVoiceFeature = null;
+      const languageNote = detectedLanguage ? `Input: ${detectedLanguage} · answer text: English` : 'Answer text: English';
+      recordStatus.textContent = `Preparing ${language.options[language.selectedIndex].text} answer...`;
+      try {
+        const response = await fetch('/api/answer', {
+          method: 'POST', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ question: query, feature: feature?.id || 'general', inputLanguage: detectedLanguage || 'unknown', textLanguage: textLanguage.value, speechLanguage: language.value })
+        });
+        const result = await response.json().catch(() => ({}));
+        if (response.ok && result.answer) {
+          showVoiceAnswer(feature?.title || 'Rythu AI', result.answer, `Evon v3.3 · text ${result.textLanguage} · voice ${result.speechLanguage}`, result.textLanguage, result.spokenText, result.speechLanguage);
+          recordStatus.textContent = `Answer · text ${result.textLanguage} · voice ${result.speechLanguage}`;
+          speak(result.spokenText, result.speechLanguage);
+          return;
+        }
+        if (response.status !== 503) notify(result.error || 'Local Evon could not answer this request.');
+      } catch {
+        notify('Local Evon is not reachable. Showing the available preview instead.');
+      }
+      if (!feature) {
+        showVoiceAnswer('Rythu AI', `I heard: “${query}”. Say a tool name such as crop, mandi, weather, calculator, KCC, irrigation, or storage; then speak your details.`, `Voice request · ${languageNote}`);
+        recordStatus.textContent = detectedLanguage ? `Heard ${detectedLanguage} · choose a tool` : 'Choose a tool by voice';
+        speak(document.querySelector('#analysisText').textContent, 'en-IN');
+        return;
+      }
+      if (feature.id === 'plant') {
+        const isCotton = /cotton|పత్తి/.test(text);
+        const isPaddy = /paddy|rice|వరి/.test(text);
+        const isRed = /red|redd|bronze|ఎర్ర/.test(text);
+        const isPest = /pest|insect|worm|hole|chew|bug|పురుగు/.test(text);
+        const photoNote = document.querySelector('#plantPhoto').files.length ? ' A photo is attached locally, but vision analysis is not connected.' : '';
+        if (isCotton && isPest) {
+          showVoiceAnswer('Plant doctor', `Do not spray yet. Check leaf undersides and cotton squares on several plants for eggs, larvae, and fresh feeding. The right treatment depends on the pest; share the crop age and what the insect looks like before choosing a product.${photoNote}`, `Rule-based preview · ${languageNote}`);
+        } else if (isPaddy && isRed) {
+          showVoiceAnswer('Plant doctor', `Red or bronze paddy leaves can have several causes, including nutrient or root stress. Note whether older leaves or whole patches are affected and check the field water level. Do not apply pesticide for red leaves alone; share the crop age and affected area with your KVK for a confirmed cause.${photoNote}`, `Rule-based preview · ${languageNote}`);
+        } else {
+          showVoiceAnswer('Plant doctor', `First identify the crop, crop age, when the symptom began, and whether it affects a few plants or a whole patch. Do not spray until the cause is confirmed.${photoNote}`, `Rule-based preview · ${languageNote}`);
+        }
+      } else if (feature.id === 'mandi') {
+        const commodity = /\bcotton\b|పత్తి/.test(text) ? 'Cotton' : /\bpaddy\b|\brice\b|వరి/.test(text) ? 'Paddy' : /\bchilli\b|\bchili\b|మిర్చి/.test(text) ? 'Chilli' : null;
+        if (!commodity) {
+          showVoiceAnswer('Mandi watch', 'This sample price table covers chilli, cotton and paddy only. Say which of these crops you want to check. Rates are illustrative, not live.', `Sample data · ${languageNote}`);
+          return;
+        }
+        document.querySelector('#commodity').value = commodity;
+        renderMarket();
+        const rows = marketData[commodity];
+        showVoiceAnswer('Mandi watch', `Sample ${commodity} modal prices per quintal: Guntur ₹${rows[0].price.toLocaleString('en-IN')}, Warangal ₹${rows[1].price.toLocaleString('en-IN')}, Khammam ₹${rows[2].price.toLocaleString('en-IN')}. These are demo values, not live rates or a sell recommendation.`, `Sample data · ${languageNote}`);
+      } else if (feature.id === 'climate') {
+        showVoiceAnswer('Village weather', 'This preview shows sample Guntur conditions only: 29 degrees, partly cloudy, with a possible evening shower. It is not a live forecast; check your local weather source before spraying.', `Sample data · ${languageNote}`);
+      } else if (feature.id === 'inputs') {
+        const measure = text.match(/(\d+(?:\.\d+)?)\s*(acres?|acre|guntas?|gunta|bighas?|bigha|cents?|cent)/i);
+        const crop = /cotton|పత్తి/.test(text) ? 'cotton' : /chilli|chili|మిర్చి/.test(text) ? 'chilli' : 'paddy';
+        if (!measure) {
+          showVoiceAnswer('Crop calculator', 'Say your plot size, local unit, and crop, for example “two acres of paddy”. Estimates use placeholder rates; confirm local recommendations.', `Voice calculator · ${languageNote}`);
+        } else {
+          document.querySelector('#area').value = measure[1];
+          const spokenUnit = measure[2].toLowerCase();
+          document.querySelector('#unit').value = spokenUnit.startsWith('gunta') ? 'gunta' : spokenUnit.startsWith('bigha') ? 'bigha' : spokenUnit.startsWith('cent') ? 'cent' : 'acre';
+          document.querySelector('#crop').value = crop;
+          updateCalculator();
+          showVoiceAnswer('Crop calculator', document.querySelector('#calcResult').innerText, `Assumption-based estimate · ${languageNote}`);
+        }
+      } else if (feature.id === 'yield') {
+        const measure = text.match(/(\d+(?:\.\d+)?)\s*(acres?|acre|guntas?|gunta|bighas?|bigha|cents?|cent)/i);
+        const yieldRate = text.match(/([\d,]+(?:\.\d+)?)\s*(?:kg|kilograms?)\s*(?:per|\/)\s*acre/i);
+        const laborRate = text.match(/([\d.]+)\s*(?:worker.?days?|workers?)\s*(?:per|\/)\s*(?:tonne|ton)/i);
+        if (!measure || !yieldRate) {
+          showVoiceAnswer('Yield & labor estimate', 'Say your plot size and your expected yield per acre, for example “three acres, four thousand kilograms per acre”. Add worker-days per tonne for a labor estimate.', `Assumption-based estimate · ${languageNote}`);
+        } else {
+          const unit = measure[2].toLowerCase();
+          const areaAcres = Number(measure[1]) * (unit.startsWith('gunta') ? 1 / 40 : unit.startsWith('bigha') ? 0.625 : unit.startsWith('cent') ? 1 / 100 : 1);
+          const tonnes = areaAcres * Number(yieldRate[1].replace(/,/g, '')) / 1000;
+          const laborText = laborRate ? ` About ${(tonnes * Number(laborRate[1])).toFixed(1)} worker-days using your labor assumption.` : ' Add worker-days per tonne if you want a labor estimate.';
+          showVoiceAnswer('Yield & labor estimate', `Estimated yield: ${tonnes.toFixed(2)} tonnes from your area and yield assumptions.${laborText} This is not a crop forecast.`, `Assumption-based estimate · ${languageNote}`);
+        }
+      } else if (feature.id === 'kcc') {
+        const amountMatch = text.match(/(?:₹|rupees?|rs\.?)\s*([\d,]+(?:\.\d+)?)|loan(?: amount| of)?\s*([\d,]+(?:\.\d+)?)/i);
+        const lakhMatch = text.match(/([\d.]+)\s*lakh/i);
+        const daysMatch = text.match(/([\d,]+)\s*days?/i);
+        const principal = lakhMatch ? Number(lakhMatch[1]) * 100000 : amountMatch ? Number((amountMatch[1] || amountMatch[2]).replace(/,/g, '')) : 0;
+        if (!principal || !daysMatch) {
+          showVoiceAnswer('KCC interest estimate', 'Say the principal in rupees and the number of days outstanding. I can show an illustrative simple-interest calculation at 4%; confirm your actual KCC terms with your bank.', `Formula preview · ${languageNote}`);
+        } else {
+          const interest = principal * 0.04 * Number(daysMatch[1].replace(/,/g, '')) / 365;
+          showVoiceAnswer('KCC interest estimate', `At 4% simple interest, the illustrative interest is ₹${interest.toLocaleString('en-IN', { maximumFractionDigits: 2 })}. Actual subvention, eligibility and bank terms may differ.`, `Formula preview · ${languageNote}`);
+        }
+      } else if (feature.id === 'irrigation') {
+        const volumeMatch = text.match(/([\d,]+)\s*(?:litres?|liters?)/i);
+        const flowMatch = text.match(/([\d,.]+)\s*(?:litres?|liters?)\s*(?:per|\/)\s*(?:minute|min)/i);
+        if (!volumeMatch || !flowMatch) {
+          showVoiceAnswer('Drip irrigation runtime', 'Say the target water volume in litres and the pump flow in litres per minute. This estimates runtime only; confirm the target volume with local crop and soil guidance.', `Math preview · ${languageNote}`);
+        } else {
+          const minutes = Number(volumeMatch[1].replace(/,/g, '')) / Number(flowMatch[1].replace(/,/g, ''));
+          showVoiceAnswer('Drip irrigation runtime', `Estimated pump runtime: ${Math.floor(minutes / 60)} hours and ${Math.round(minutes % 60)} minutes, using only the values you spoke.`, `Math preview · ${languageNote}`);
+        }
+      } else if (feature.id === 'insurance') {
+        const fileName = document.querySelector('#documentFile').files[0]?.name;
+        const attachmentNote = fileName ? ` The file “${fileName}” is attached locally, but OCR is not connected.` : '';
+        showVoiceAnswer('Insurance & subsidy checklist', `I can’t read or verify a circular yet. From the original notice, check the scheme name, last date, who is eligible, where to apply, and which land and bank records are required. Confirm the deadline with the issuing office before acting.${attachmentNote}`, `Checklist guidance · ${languageNote}`);
+      } else if (feature.id === 'soil') {
+        const values = text.match(/(?:n|nitrogen)[^\d]{0,12}(\d+(?:\.\d+)?)[\s\S]{0,60}?(?:p|phosphorus)[^\d]{0,12}(\d+(?:\.\d+)?)[\s\S]{0,60}?(?:k|potassium)[^\d]{0,12}(\d+(?:\.\d+)?)/i);
+        if (values) {
+          showVoiceAnswer('Soil card values', `I heard N ${values[1]}, P ${values[2]}, and K ${values[3]}. These are only the values you spoke back to me, not a fertilizer dose. Crop-specific soil rules and OCR are not connected; confirm recommendations with your soil lab or KVK.${document.querySelector('#soilFile')?.files.length ? ' The attached image has not been analyzed.' : ''}`, `Read-back only · ${languageNote}`);
+        } else {
+          showVoiceAnswer('Soil health card', 'Read the N, P, and K values aloud with their units, for example “N 120, P 35, K 48 milligrams per kilogram”. I can repeat the values, but verified crop-specific doses are not connected.', `Voice read-back · ${languageNote}`);
+        }
+      } else if (feature.id === 'pest') {
+        showVoiceAnswer('Pest prevention alert', 'I don’t have local humidity, temperature, radar, or outbreak records connected, so I can’t predict this week’s pest risk. Check your local KVK advisory and inspect the crop before applying any treatment.', `Regional data unavailable · ${languageNote}`);
+      } else if (feature.id === 'organic') {
+        showVoiceAnswer('Organic crop care', 'A verified recipe and crop-specific safety source are not connected, so I won’t guess a Jeevamrutha, Neem Astra, or Panchagavya mixture. Confirm preparation, dilution, crop suitability, and application timing with your local KVK before use.', `Verified guidance unavailable · ${languageNote}`);
+      } else if (feature.id === 'machinery') {
+        showVoiceAnswer('Machinery hiring', 'I can’t check availability or place a booking because no local hiring directory is connected. Ask your Custom Hiring Centre about the machine, village, date, hourly rate, transport charge, and operator availability.', `Directory unavailable · ${languageNote}`);
+      } else if (feature.id === 'rotation') {
+        showVoiceAnswer('Crop rotation planner', 'A rotation choice depends on your last crop, soil, water, season, and local pest pressure. A verified regional agronomy plan is not connected; ask your KVK before choosing the next crop.', `Agronomy data unavailable · ${languageNote}`);
+      } else if (feature.id === 'scribe') {
+        showVoiceAnswer('Trade terms draft', `Draft transcript: “${query}”. Confirm the buyer and seller, crop grade, quantity, unit price, total amount and payment date with both parties. This is not a verified agreement; the current transcription does not identify speakers.`, `Prisma transcript preview · ${languageNote}`);
+      } else {
+        const detail = feature.note || `${feature.description} This preview has no verified live data source for this tool.`;
+        showVoiceAnswer(feature.title, detail, `Feature status · ${languageNote}`);
+      }
+      recordStatus.textContent = detectedLanguage ? `Heard ${detectedLanguage} · English fallback` : 'English fallback answer';
+      speak(document.querySelector('#analysisText').textContent, 'en-IN');
+    }
+    document.querySelector('#speakAdvice').addEventListener('click', () => {
+      const output = document.querySelector('#analysisOutput');
+      speak(output.dataset.spokenText || document.querySelector('#analysisText').textContent, output.dataset.speechLanguage || 'en-IN');
+    });
+    document.querySelector('#speakBrief').addEventListener('click', () => speak('Good morning. Guntur is 29 degrees and partly cloudy. There may be an evening shower, so check the local forecast before spraying. These are sample demo conditions.', 'en-IN'));
+    document.querySelector('#speakMarket').addEventListener('click', () => { const crop = document.querySelector('#commodity').value; const rows = marketData[crop]; speak(`Sample ${crop} prices today: Guntur rupees ${rows[0].price} per quintal, Warangal rupees ${rows[1].price} per quintal, Khammam rupees ${rows[2].price} per quintal. These are illustrative demo rates, not live market data.`, 'en-IN'); });
+    document.querySelector('#helpButton').addEventListener('click', () => notify('All tools accept voice requests. Prisma transcribes; local Evon can prepare separate text and spoken languages; Timbre speaks the voice version.'));
+    document.querySelector('#plantPhoto').addEventListener('change', event => {
+      if (event.target.files[0]) {
+        document.querySelector('#plantPhotoName').textContent = event.target.files[0].name;
+        document.querySelector('#plantPhotoStatus').textContent = 'Photo selected locally. Vision analysis is not connected.';
+      }
+    });
+    document.querySelector('#documentFile').addEventListener('change', event => {
+      if (event.target.files[0]) document.querySelector('#documentFileStatus').textContent = `${event.target.files[0].name} selected locally. OCR is not connected.`;
+    });
+    document.querySelectorAll('.nav a').forEach(link => link.addEventListener('click', () => { document.querySelectorAll('.nav a').forEach(item => item.classList.remove('active')); link.classList.add('active'); }));
+    document.querySelector('#featureGrid').addEventListener('click', event => {
+      const card = event.target.closest('[data-feature-id]');
+      if (card) openFeature(featureCatalog.find(feature => feature.id === card.dataset.featureId));
+    });
+    document.querySelector('#closeFeatureDialog').addEventListener('click', () => document.querySelector('#featureDialog').close());
+    document.querySelector('#dialogVoiceButton').addEventListener('click', () => {
+      activeVoiceFeature = document.querySelector('#featureDialog').dataset.featureId;
+      document.querySelector('#featureDialog').close();
+      recordButton.click();
+    });
+    document.querySelector('#featurePreview').addEventListener('click', event => {
+      const action = event.target.closest('.dialog-action');
+      if (!action) return;
+      event.preventDefault();
+      const destination = document.querySelector(action.getAttribute('href'));
+      document.querySelector('#featureDialog').close();
+      destination?.scrollIntoView({ behavior: 'smooth' });
+    });
+    document.querySelector('#featurePreview').addEventListener('change', event => {
+      if (event.target.id === 'soilFile' && event.target.files[0]) {
+        document.querySelector('#soilFileStatus').textContent = `${event.target.files[0].name} selected locally. OCR is not connected.`;
+      }
+    });
+    document.querySelector('#sttModel').addEventListener('change', () => {
+      const model = document.querySelector('#sttModel').value;
+      const languageCode = document.querySelector('#sttLanguage');
+      if (model === 'prisma-v2.5' && (languageCode.value === 'indic-auto' || languageCode.value.includes(','))) {
+        languageCode.value = languageCode.value === 'indic-auto'
+          ? (language.value === 'hi-en' ? 'hi-IN' : language.value)
+          : languageCode.value.split(',')[0];
+      }
+      Array.from(languageCode.options).forEach(option => {
+        option.disabled = model === 'prisma-v2.5' && (option.value === 'indic-auto' || option.value.includes(','));
+      });
+    });
+    document.querySelector('#sttLanguage').addEventListener('change', event => {
+      if ((event.target.value === 'indic-auto' || event.target.value.includes(',')) && document.querySelector('#sttModel').value === 'prisma-v2.5') {
+        document.querySelector('#sttModel').value = 'prisma-v3.0';
+        document.querySelector('#sttModel').dispatchEvent(new Event('change'));
+      }
+    });
+
+    function encodeWav(samples, sampleRate) {
+      const buffer = new ArrayBuffer(44 + samples.length * 2);
+      const view = new DataView(buffer);
+      const writeText = (offset, value) => { for (let index = 0; index < value.length; index += 1) view.setUint8(offset + index, value.charCodeAt(index)); };
+      writeText(0, 'RIFF'); view.setUint32(4, 36 + samples.length * 2, true); writeText(8, 'WAVE');
+      writeText(12, 'fmt '); view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, 1, true);
+      view.setUint32(24, sampleRate, true); view.setUint32(28, sampleRate * 2, true); view.setUint16(32, 2, true); view.setUint16(34, 16, true);
+      writeText(36, 'data'); view.setUint32(40, samples.length * 2, true);
+      for (let index = 0; index < samples.length; index += 1) {
+        const sample = Math.max(-1, Math.min(1, samples[index]));
+        view.setInt16(44 + index * 2, sample < 0 ? sample * 0x8000 : sample * 0x7fff, true);
+      }
+      return new Uint8Array(buffer);
+    }
+    async function convertRecordingToWav(blob) {
+      const context = new AudioContext();
+      try {
+        const decoded = await context.decodeAudioData(await blob.arrayBuffer());
+        const sampleRate = 16000;
+        const offline = new OfflineAudioContext(1, Math.ceil(decoded.duration * sampleRate), sampleRate);
+        const source = offline.createBufferSource();
+        source.buffer = decoded;
+        source.connect(offline.destination);
+        source.start();
+        const mono = await offline.startRendering();
+        return encodeWav(mono.getChannelData(0), sampleRate);
+      } finally { await context.close(); }
+    }
+    function encodeBase64(bytes) {
+      let binary = '';
+      for (let start = 0; start < bytes.length; start += 0x8000) binary += String.fromCharCode(...bytes.subarray(start, start + 0x8000));
+      return btoa(binary);
+    }
+    const recordButton = document.querySelector('#recordButton');
+    const recordStatus = document.querySelector('#recordStatus');
+    let activeRecorder = null;
+    let recordingTimer = null;
+    function setRecording(active) {
+      recordButton.classList.toggle('recording', active);
+      recordButton.setAttribute('aria-label', active ? 'Stop voice input' : 'Start voice input');
+      recordButton.title = active ? 'Stop recording' : 'Start voice input';
+      recordButton.innerHTML = `<i data-lucide="${active ? 'square' : 'mic'}" width="17"></i>`;
+      if (window.lucide) lucide.createIcons();
+    }
+    async function transcribeRecording(blob) {
+      recordStatus.textContent = 'Preparing audio...';
+      const wav = await convertRecordingToWav(blob);
+      const model = document.querySelector('#sttModel').value;
+      const languageCode = document.querySelector('#sttLanguage').value;
+      recordStatus.textContent = 'Transcribing with Prisma...';
+      const response = await fetch('/api/stt', {
+        method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ audioBase64: encodeBase64(wav), model, languageCode, format: 'transcribe' })
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || result.success === false) throw new Error(result.error?.message || result.error || result.message || `Prisma request failed (${response.status}).`);
+      if (!result.transcript) { notify('No speech was detected. Try a short, clear recording.'); return; }
+      recordStatus.textContent = result.detected_language_code ? `Heard ${result.detected_language_code}` : 'Transcription complete';
+      handleVoiceCommand(result.transcript, result.detected_language_code);
+    }
+    recordButton.addEventListener('click', async () => {
+      if (activeRecorder?.state === 'recording') { activeRecorder.stop(); clearTimeout(recordingTimer); return; }
+      if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) { notify('Microphone recording is not supported in this browser.'); return; }
+      if (document.querySelector('#sttModel').value === 'prisma-v2.5' && document.querySelector('#sttLanguage').value === 'indic-auto') { notify('Prisma v2.5 needs a specific spoken language.'); return; }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true } });
+        const chunks = [];
+        activeRecorder = new MediaRecorder(stream);
+        activeRecorder.addEventListener('dataavailable', event => { if (event.data.size) chunks.push(event.data); });
+        activeRecorder.addEventListener('stop', async () => {
+          stream.getTracks().forEach(track => track.stop());
+          setRecording(false);
+          try { await transcribeRecording(new Blob(chunks)); }
+          catch (error) { recordStatus.textContent = 'Ready for a short clip'; notify(error.message || 'Prisma could not transcribe this clip.'); }
+          finally { activeRecorder = null; }
+        }, { once: true });
+        activeRecorder.start();
+        setRecording(true);
+        recordStatus.textContent = 'Recording · up to 28 seconds';
+        recordingTimer = setTimeout(() => { if (activeRecorder?.state === 'recording') activeRecorder.stop(); }, 28000);
+      } catch { notify('Microphone permission is needed to record a crop question.'); }
+    });
+    document.querySelector('#voiceCommandButton').addEventListener('click', () => {
+      document.querySelector('#doctor').scrollIntoView({ behavior: 'smooth' });
+      recordButton.click();
+    });
+    document.querySelector('#featureDialog').addEventListener('click', event => {
+      if (event.target === event.currentTarget) event.currentTarget.close();
+    });
+  </script>
+</body>
+</html>
