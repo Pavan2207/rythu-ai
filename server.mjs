@@ -2,6 +2,8 @@ import { createServer } from 'node:http';
 import { existsSync, readFileSync } from 'node:fs';
 import { extname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { translationLanguages, translateMany, translateTo } from './lib/translate.mjs';
+import { fetchWeather, fetchMandi } from './lib/gnani-api.mjs';
 
 const root = resolve(fileURLToPath(new URL('.', import.meta.url)));
 const envFile = resolve(root, '.env.local');
@@ -104,6 +106,37 @@ async function proxyTextToSpeech(request, response) {
   response.end(audio);
 }
 
+async function translateAnswer(request, response) {
+  const body = await readJson(request);
+  const text = String(body.text || '').trim();
+  const targetLanguage = String(body.targetLanguage || body.language || 'en-IN');
+  if (!text || text.length > 3000) return sendJson(response, 400, { error: 'Text must be between 1 and 3,000 characters.' });
+  if (!translationLanguages.has(targetLanguage)) return sendJson(response, 400, { error: 'Choose a supported translation language.' });
+  try {
+    const result = await translateTo(text, targetLanguage);
+    sendJson(response, 200, { text: result.text, targetLanguage, provider: result.provider, cached: result.cached });
+  } catch (error) {
+    sendJson(response, error.status || 502, { error: error.status ? error.message : 'Translation service is temporarily unavailable.' });
+  }
+}
+
+async function translatePageText(request, response) {
+  const body = await readJson(request);
+  const texts = Array.isArray(body.texts) ? body.texts : [];
+  const targetLanguage = String(body.targetLanguage || body.language || 'en-IN');
+  if (!texts.length || texts.length > 250) return sendJson(response, 400, { error: 'Send between 1 and 250 text strings.' });
+  if (texts.some(text => typeof text !== 'string' || !text.trim() || text.length > 1200)) {
+    return sendJson(response, 400, { error: 'Each text string must be between 1 and 1,200 characters.' });
+  }
+  if (!translationLanguages.has(targetLanguage)) return sendJson(response, 400, { error: 'Choose a supported translation language.' });
+  try {
+    const translations = await translateMany(texts, targetLanguage);
+    sendJson(response, 200, { translations, targetLanguage });
+  } catch (error) {
+    sendJson(response, error.status || 502, { error: error.status ? error.message : 'Translation service is temporarily unavailable.' });
+  }
+}
+
 async function generateLocalEvonAnswer(request, response) {
   const body = await readJson(request);
   const endpoint = process.env.EVON_BASE_URL;
@@ -158,10 +191,24 @@ async function generateLocalEvonAnswer(request, response) {
 async function handle(request, response) {
   const url = new URL(request.url, 'http://localhost');
   if (request.method === 'GET' && url.pathname === '/api/status') {
-    return sendJson(response, 200, { gnaniConfigured: Boolean(process.env.VACHANA_API_KEY_ID), evonConfigured: Boolean(process.env.EVON_BASE_URL), sttModel: 'Prisma v3.0', ttsModel: 'Timbre v3.0' });
+    return sendJson(response, 200, { gnaniConfigured: Boolean(process.env.VACHANA_API_KEY_ID), evonConfigured: Boolean(process.env.EVON_BASE_URL), sttModel: 'Prisma v3.0', ttsModel: 'Timbre v3.0', translationConfigured: true, translationProvider: 'Google Translate / MyMemory fallback', weatherSource: 'Open-Meteo', mandiLive: Boolean(process.env.DATA_GOV_API_KEY) });
+  }
+  if (request.method === 'GET' && url.pathname === '/api/weather') {
+    const r = await fetchWeather(new Request(url.toString()));
+    const body = await r.text();
+    response.writeHead(r.status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' });
+    return response.end(body);
+  }
+  if (request.method === 'GET' && url.pathname === '/api/mandi') {
+    const r = await fetchMandi(new Request(url.toString()));
+    const body = await r.text();
+    response.writeHead(r.status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' });
+    return response.end(body);
   }
   if (request.method === 'POST' && url.pathname === '/api/stt') return proxySpeechToText(request, response);
   if (request.method === 'POST' && url.pathname === '/api/tts') return proxyTextToSpeech(request, response);
+  if (request.method === 'POST' && url.pathname === '/api/translate') return translateAnswer(request, response);
+  if (request.method === 'POST' && url.pathname === '/api/translate-batch') return translatePageText(request, response);
   if (request.method === 'POST' && url.pathname === '/api/answer') return generateLocalEvonAnswer(request, response);
   if (request.method !== 'GET' && request.method !== 'HEAD') return sendJson(response, 405, { error: 'Method not allowed.' });
 

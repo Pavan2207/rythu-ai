@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#183c2b">
+  <title>All tools | Rythu AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <div class="brand"><div class="brand-mark"><i data-lucide="sprout" width="21" height="21"></i></div><div><div class="brand-name">Rythu AI</div><div class="brand-caption">Your field companion</div></div></div>
+      <div class="nav-label">Farm desk</div>
+      <nav class="nav">
+        <a href="index.html"><i data-lucide="layout-dashboard" width="17"></i><span>Overview</span></a>
+        <a href="plant-doctor.html"><i data-lucide="stethoscope" width="17"></i><span>Plant doctor</span></a>
+        <a href="mandi.html"><i data-lucide="chart-no-axes-combined" width="17"></i><span>Mandi prices</span></a>
+        <a href="documents.html"><i data-lucide="files" width="17"></i><span>Documents</span></a>
+        <a href="calculator.html"><i data-lucide="calculator" width="17"></i><span>Crop calculator</span></a>
+        <a class="active" href="tools.html" aria-current="page"><i data-lucide="grid-2x2" width="17"></i><span>All tools</span></a>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="stack-note"><div class="stack-note-top"><span>Gnani voice stack</span><span class="integration-state" id="integrationState">Checking</span></div><p id="integrationNote">Prisma v3.0 + Timbre v3.0 + translation. Pick any text and voice language.</p></div>
+      <div class="profile"><div class="avatar">RK</div><div><strong>Ramesh Kumar</strong><small>Guntur, Andhra Pradesh</small></div></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="mobile-brand"><span class="brand-mark"><i data-lucide="sprout" width="17"></i></span>Rythu AI</div>
+        <div class="crumb">Farm desk <span aria-hidden="true">/</span> All tools</div>
+        <div class="top-actions">
+          <button class="icon-button" id="helpButton" aria-label="About this demo" title="About this demo"><i data-lucide="circle-help" width="16"></i></button>
+          <label class="language-control">Text<select class="language" id="textLanguage" aria-label="Text answer language" title="Text answer language"><option value="en-IN">English</option><option value="te-IN">తెలుగు</option><option value="hi-IN">हिन्दी</option><option value="ta-IN">தமிழ்</option><option value="kn-IN">ಕನ್ನಡ</option><option value="ml-IN">മലയാളം</option><option value="mr-IN">मराठी</option><option value="pa-IN">ਪੰਜਾਬੀ</option><option value="bn-IN">বাংলা</option><option value="gu-IN">ગુજરાતી</option><option value="hi-en">Hinglish</option></select></label>
+          <label class="language-control">Voice<select class="language" id="language" aria-label="Spoken answer language" title="Spoken answer language"><option value="te-IN">తెలుగు</option><option value="hi-IN">हिन्दी</option><option value="en-IN">English</option><option value="ta-IN">தமிழ்</option><option value="kn-IN">ಕನ್ನಡ</option><option value="ml-IN">മലയാളം</option><option value="mr-IN">मराठी</option><option value="pa-IN">ਪੰਜਾਬੀ</option><option value="bn-IN">বাংলা</option><option value="gu-IN">ગુજરાતી</option><option value="hi-en">Hinglish</option></select></label>
+        </div>
+      </header>
+
+      <div class="page">
+        <section class="page-intro">
+          <div>
+            <div class="eyebrow">Toolkit</div>
+            <h1>Ten farmer tools</h1>
+            <p>Choose a tool to see its integration status, then speak your request on the voice assistant page. Each card opens a short preview, not a live external service.</p>
+          </div>
+          <div class="welcome-meta"><div class="weather-inline"><i class="sun" data-lucide="sun" width="17"></i><strong>29°</strong><span>Partly cloudy</span></div><div class="location"><i data-lucide="map-pin" width="14"></i>Guntur, AP</div></div>
+        </section>
+
+        <section class="feature-catalog" id="all-tools">
+          <div class="section-heading"><div><h2>Voice-first catalog</h2><p>Select a card to inspect the workflow.</p></div><span class="badge">Toolkit · 10 tools</span></div>
+          <div class="feature-grid" id="featureGrid"></div>
+        </section>
+
+        <div class="section-heading"><div><h2>Fast paths</h2><p>Jump straight to a working page.</p></div></div>
+        <div class="quick-grid">
+          <a class="quick-card" href="plant-doctor.html"><span class="quick-icon"><i data-lucide="stethoscope" width="17"></i></span><strong>Plant doctor</strong><p>Voice crop triage with Prisma transcription and Timbre playback.</p><span class="text-link">Open<i data-lucide="arrow-up-right" width="13"></i></span></a>
+          <a class="quick-card" href="mandi.html"><span class="quick-icon"><i data-lucide="chart-no-axes-combined" width="17"></i></span><strong>Mandi watch</strong><p>Sample chilli, cotton and paddy rates across three mandis.</p><span class="text-link">Open<i data-lucide="arrow-up-right" width="13"></i></span></a>
+          <a class="quick-card" href="calculator.html"><span class="quick-icon"><i data-lucide="calculator" width="17"></i></span><strong>Crop calculator</strong><p>Plot-size estimates for seed, fertilizer bags and input cost.</p><span class="text-link">Open<i data-lucide="arrow-up-right" width="13"></i></span></a>
+        </div>
+
+        <p class="disclaimer">Tool statuses reflect the current prototype. OCR, live mandi feeds, micro-climate alerts, pest forecasting, verified organic recipes and dual-party diarization are not connected. Verify agricultural, financial and scheme decisions with official local sources.</p>
+      </div>
+    </main>
+  </div>
+
+  <dialog class="feature-dialog" id="featureDialog" aria-labelledby="featureTitle">
+    <div class="dialog-content">
+      <button class="dialog-close" id="closeFeatureDialog" aria-label="Close"><i data-lucide="x" width="16"></i></button>
+      <div class="dialog-kicker" id="featureStatus"></div>
+      <h2 id="featureTitle"></h2>
+      <p id="featureDescription"></p>
+      <div class="dialog-stack"><strong>Technical integration</strong><span id="featureStack"></span></div>
+      <button class="analyze voice-record" id="dialogVoiceButton"><i data-lucide="mic" width="15"></i>Speak about this tool</button>
+      <div id="featurePreview"></div>
+    </div>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>

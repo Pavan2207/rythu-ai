@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#183c2b">
+  <title>Mandi prices | Rythu AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <div class="brand"><div class="brand-mark"><i data-lucide="sprout" width="21" height="21"></i></div><div><div class="brand-name">Rythu AI</div><div class="brand-caption">Your field companion</div></div></div>
+      <div class="nav-label">Farm desk</div>
+      <nav class="nav">
+        <a href="index.html"><i data-lucide="layout-dashboard" width="17"></i><span>Overview</span></a>
+        <a href="plant-doctor.html"><i data-lucide="stethoscope" width="17"></i><span>Plant doctor</span></a>
+        <a class="active" href="mandi.html" aria-current="page"><i data-lucide="chart-no-axes-combined" width="17"></i><span>Mandi prices</span></a>
+        <a href="documents.html"><i data-lucide="files" width="17"></i><span>Documents</span></a>
+        <a href="calculator.html"><i data-lucide="calculator" width="17"></i><span>Crop calculator</span></a>
+        <a href="tools.html"><i data-lucide="grid-2x2" width="17"></i><span>All tools</span></a>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="stack-note"><div class="stack-note-top"><span>Gnani voice stack</span><span class="integration-state" id="integrationState">Checking</span></div><p id="integrationNote">Prisma v3.0 + Timbre v3.0 + translation. Pick any text and voice language.</p></div>
+      <div class="profile"><div class="avatar">RK</div><div><strong>Ramesh Kumar</strong><small>Guntur, Andhra Pradesh</small></div></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="mobile-brand"><span class="brand-mark"><i data-lucide="sprout" width="17"></i></span>Rythu AI</div>
+        <div class="crumb">Farm desk <span aria-hidden="true">/</span> Mandi prices</div>
+        <div class="top-actions">
+          <button class="icon-button" id="helpButton" aria-label="About this demo" title="About this demo"><i data-lucide="circle-help" width="16"></i></button>
+          <label class="language-control">Text<select class="language" id="textLanguage" aria-label="Text answer language" title="Text answer language"><option value="en-IN">English</option><option value="te-IN">తెలుగు</option><option value="hi-IN">हिन्दी</option><option value="ta-IN">தமிழ்</option><option value="kn-IN">ಕನ್ನಡ</option><option value="ml-IN">മലയാളം</option><option value="mr-IN">मराठी</option><option value="pa-IN">ਪੰਜਾਬੀ</option><option value="bn-IN">বাংলা</option><option value="gu-IN">ગુજરાતી</option><option value="hi-en">Hinglish</option></select></label>
+          <label class="language-control">Voice<select class="language" id="language" aria-label="Spoken answer language" title="Spoken answer language"><option value="te-IN">తెలుగు</option><option value="hi-IN">हिन्दी</option><option value="en-IN">English</option><option value="ta-IN">தமிழ்</option><option value="kn-IN">ಕನ್ನಡ</option><option value="ml-IN">മലയാളം</option><option value="mr-IN">मराठी</option><option value="pa-IN">ਪੰਜਾਬੀ</option><option value="bn-IN">বাংলা</option><option value="gu-IN">ગુજરાતી</option><option value="hi-en">Hinglish</option></select></label>
+        </div>
+      </header>
+
+      <div class="page">
+        <section class="page-intro">
+          <div>
+            <div class="eyebrow">Market desk</div>
+            <h1>Mandi watch</h1>
+            <p>Compare nearby sample rates before you decide. Choose a commodity, read the table, or press Read rates aloud and let Timbre speak the snapshot.</p>
+          </div>
+          <div class="welcome-meta"><div class="weather-inline"><i class="sun" data-lucide="sun" width="17"></i><strong>29°</strong><span>Partly cloudy</span></div><div class="location"><i data-lucide="map-pin" width="14"></i>Guntur, AP</div></div>
+        </section>
+
+        <div class="section-heading" id="markets"><div><h2>Today's market snapshot</h2><p>Indicative demo data · verify with your APMC before selling.</p></div><button class="text-link" id="speakMarket"><i data-lucide="volume-2" width="14"></i>Read rates aloud</button></div>
+        <section class="panel market-panel">
+          <div class="market-head"><div><h3>Choose a commodity</h3><p>Switch crops to update the sample table</p></div><div class="market-controls"><span class="demo-badge">Sample rates</span><select id="commodity" aria-label="Commodity"><option value="Chilli">Red chilli</option><option value="Cotton">Cotton</option><option value="Paddy">Paddy</option></select></div></div>
+          <table class="market-table"><thead><tr><th>Mandi</th><th>Modal price</th><th>Change</th><th>Arrivals</th></tr></thead><tbody id="marketRows"></tbody></table>
+          <div class="market-foot"><span>Illustrative figures only; not a live feed or financial advice.</span><span>Updated for demo · 9:00 AM</span></div>
+        </section>
+
+        <div class="bottom-grid">
+          <section class="panel utility">
+            <div class="utility-head"><div><h3>Hold or sell?</h3><p>Questions to ask before deciding</p></div><span class="utility-icon" style="color:#496d54;background:#e8efdf"><i data-lucide="scale" width="16"></i></span></div>
+            <ul class="info-list">
+              <li><i data-lucide="badge-indian-rupee" width="13"></i><span>Compare today's modal price against your cost of production, not just yesterday's rate.</span></li>
+              <li><i data-lucide="warehouse" width="13"></i><span>Check storage cost, moisture limits and whether your stock can wait safely.</span></li>
+              <li><i data-lucide="calendar-clock" width="13"></i><span>Ask your APMC for arrivals next week and any local procurement date.</span></li>
+              <li><i data-lucide="shield-alert" width="13"></i><span>This prototype does not generate a hold or sell recommendation.</span></li>
+            </ul>
+          </section>
+          <section class="panel utility">
+            <div class="utility-head"><div><h3>Before you sell</h3><p>Verify these with the mandi</p></div><span class="utility-icon"><i data-lucide="clipboard-check" width="16"></i></span></div>
+            <ul class="doc-checklist">
+              <li><i data-lucide="circle-check" width="13"></i><span>Grade, moisture and bag weight accepted by the buyer.</span></li>
+              <li><i data-lucide="circle-check" width="13"></i><span>Commission, weighing and loading charges.</span></li>
+              <li><i data-lucide="circle-check" width="13"></i><span>Payment date and receipt details.</span></li>
+              <li><i data-lucide="circle-check" width="13"></i><span>The current official rate on the APMC board.</span></li>
+            </ul>
+            <a class="small-button" href="plant-doctor.html?feature=scribe">Draft trade terms by voice</a>
+          </section>
+        </div>
+
+        <p class="disclaimer">Mandi rates on this page are illustrative demo values, not a live APMC feed, and are not financial advice. Confirm arrivals, grade and payment terms with your local mandi before selling.</p>
+      </div>
+    </main>
+  </div>
+
+  <dialog class="feature-dialog" id="featureDialog" aria-labelledby="featureTitle">
+    <div class="dialog-content">
+      <button class="dialog-close" id="closeFeatureDialog" aria-label="Close"><i data-lucide="x" width="16"></i></button>
+      <div class="dialog-kicker" id="featureStatus"></div>
+      <h2 id="featureTitle"></h2>
+      <p id="featureDescription"></p>
+      <div class="dialog-stack"><strong>Technical integration</strong><span id="featureStack"></span></div>
+      <button class="analyze voice-record" id="dialogVoiceButton"><i data-lucide="mic" width="15"></i>Speak about this tool</button>
+      <div id="featurePreview"></div>
+    </div>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>

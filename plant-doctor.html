@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#183c2b">
+  <title>Plant doctor | Rythu AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <div class="brand"><div class="brand-mark"><i data-lucide="sprout" width="21" height="21"></i></div><div><div class="brand-name">Rythu AI</div><div class="brand-caption">Your field companion</div></div></div>
+      <div class="nav-label">Farm desk</div>
+      <nav class="nav">
+        <a href="index.html"><i data-lucide="layout-dashboard" width="17"></i><span>Overview</span></a>
+        <a class="active" href="plant-doctor.html" aria-current="page"><i data-lucide="stethoscope" width="17"></i><span>Plant doctor</span></a>
+        <a href="mandi.html"><i data-lucide="chart-no-axes-combined" width="17"></i><span>Mandi prices</span></a>
+        <a href="documents.html"><i data-lucide="files" width="17"></i><span>Documents</span></a>
+        <a href="calculator.html"><i data-lucide="calculator" width="17"></i><span>Crop calculator</span></a>
+        <a href="tools.html"><i data-lucide="grid-2x2" width="17"></i><span>All tools</span></a>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="stack-note"><div class="stack-note-top"><span>Gnani voice stack</span><span class="integration-state" id="integrationState">Checking</span></div><p id="integrationNote">Prisma v3.0 + Timbre v3.0 + translation. Pick any text and voice language.</p></div>
+      <div class="profile"><div class="avatar">RK</div><div><strong>Ramesh Kumar</strong><small>Guntur, Andhra Pradesh</small></div></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="mobile-brand"><span class="brand-mark"><i data-lucide="sprout" width="17"></i></span>Rythu AI</div>
+        <div class="crumb">Farm desk <span aria-hidden="true">/</span> Plant doctor</div>
+        <div class="top-actions">
+          <button class="icon-button" id="helpButton" aria-label="About this demo" title="About this demo"><i data-lucide="circle-help" width="16"></i></button>
+          <label class="language-control">Text<select class="language" id="textLanguage" aria-label="Text answer language" title="Text answer language"><option value="en-IN">English</option><option value="te-IN">తెలుగు</option><option value="hi-IN">हिन्दी</option><option value="ta-IN">தமிழ்</option><option value="kn-IN">ಕನ್ನಡ</option><option value="ml-IN">മലയാളം</option><option value="mr-IN">मराठी</option><option value="pa-IN">ਪੰਜਾਬੀ</option><option value="bn-IN">বাংলা</option><option value="gu-IN">ગુજરાતી</option><option value="hi-en">Hinglish</option></select></label>
+          <label class="language-control">Voice<select class="language" id="language" aria-label="Spoken answer language" title="Spoken answer language"><option value="te-IN">తెలుగు</option><option value="hi-IN">हिन्दी</option><option value="en-IN">English</option><option value="ta-IN">தமிழ்</option><option value="kn-IN">ಕನ್ನಡ</option><option value="ml-IN">മലയാളം</option><option value="mr-IN">मराठी</option><option value="pa-IN">ਪੰਜਾਬੀ</option><option value="bn-IN">বাংলা</option><option value="gu-IN">ગુજરાતી</option><option value="hi-en">Hinglish</option></select></label>
+        </div>
+      </header>
+
+      <div class="page">
+        <section class="page-intro">
+          <div>
+            <div class="eyebrow">Crop support</div>
+            <h1>Voice field assistant</h1>
+            <p>Speak a crop question or name another tool. Prisma transcribes the clip, the answer appears as text, and Timbre can read it aloud.</p>
+          </div>
+          <div class="welcome-meta"><div class="weather-inline"><i class="sun" data-lucide="sun" width="17"></i><strong>29°</strong><span>Partly cloudy</span></div><div class="location"><i data-lucide="map-pin" width="14"></i>Guntur, AP</div></div>
+        </section>
+
+        <div class="workspace-grid">
+          <section class="panel doctor" id="doctor">
+            <div class="panel-top"><div class="panel-title"><span class="panel-icon"><i data-lucide="scan-eye" width="16"></i></span>Voice field assistant</div><span class="badge">All tools · voice input</span></div>
+            <p class="prompt-label">Speak a question or name a tool: crop advice, mandi prices, weather, calculator, KCC, machinery, or storage.</p>
+            <button class="analyze voice-record" id="recordButton" aria-label="Start voice command" title="Start voice command"><i data-lucide="mic" width="15"></i>Start voice command</button>
+            <p class="transcript-preview" id="transcriptText" aria-live="polite">Your recognized words will appear here.</p>
+            <div class="voice-help">Input language and response language are selected separately above.</div>
+            <label class="upload-button"><i data-lucide="image-plus" width="15"></i><span id="plantPhotoName">Attach optional plant photo</span><input id="plantPhoto" type="file" accept="image/*"></label>
+            <div class="voice-help" id="plantPhotoStatus">Vision analysis is not connected; photo stays on this device.</div>
+            <div class="stt-options"><label>Prisma <select id="sttModel" aria-label="Speech recognition model"><option value="prisma-v3.0">v3.0 · multilingual</option><option value="prisma-v2.5">v2.5 · one language</option></select></label><label>Audio language <select id="sttLanguage" aria-label="Spoken language"><optgroup label="Detection"><option value="indic-auto">Auto detect (v3.0)</option></optgroup><optgroup label="Single language"><option value="te-IN">Telugu</option><option value="hi-IN">Hindi</option><option value="en-IN">English</option><option value="ta-IN">Tamil</option><option value="kn-IN">Kannada</option><option value="ml-IN">Malayalam</option><option value="mr-IN">Marathi</option><option value="pa-IN">Punjabi</option><option value="bn-IN">Bengali</option><option value="gu-IN">Gujarati</option></optgroup><optgroup label="Code-mixed · Prisma v3.0"><option value="te-IN,en-IN">Telugu + English</option><option value="hi-IN,en-IN">Hindi + English</option><option value="ta-IN,en-IN">Tamil + English</option><option value="kn-IN,en-IN">Kannada + English</option><option value="ml-IN,en-IN">Malayalam + English</option><option value="mr-IN,en-IN">Marathi + English</option><option value="pa-IN,en-IN">Punjabi + English</option><option value="bn-IN,en-IN">Bengali + English</option><option value="gu-IN,en-IN">Gujarati + English</option></optgroup></select></label><span class="record-status" id="recordStatus">Ready for a short clip</span></div>
+            <div class="analysis-output" id="analysisOutput" aria-live="polite"><strong id="analysisTitle">Field guidance</strong><p id="analysisText" data-no-translate></p><div class="analysis-footer"><span id="analysisSource">Text-only triage · not a diagnosis or pesticide prescription</span><button class="speak-button" id="speakAdvice"><i data-lucide="volume-2" width="13"></i>Listen</button></div></div>
+          </section>
+
+          <section class="panel utility">
+            <div class="utility-head"><div><h3>How this page works</h3><p>Speech in, guidance out</p></div><span class="utility-icon" style="color:#496d54;background:#e8efdf"><i data-lucide="audio-lines" width="16"></i></span></div>
+            <div class="stack-list">
+              <div><strong>1 · Speak</strong>Tap Start voice command and describe the crop, age, symptom and affected area. Clips stop automatically after 28 seconds.</div>
+              <div><strong>2 · Transcribe</strong>Prisma v3.0 detects the spoken language, or you can lock one. Code-mixed language pairs need v3.0.</div>
+              <div><strong>3 · Answer</strong>Cautious rule-based answers are translated by the server into your selected text and voice languages. With local Evon configured, Evon writes the answer directly instead.</div>
+              <div><strong>4 · Listen</strong>Timbre reads the translated answer in the selected voice language. Every language is spoken by the API, not the browser.</div>
+            </div>
+            <ul class="info-list">
+              <li><i data-lucide="shield-alert" width="13"></i><span>No pesticide dose is prescribed. Confirm the cause with your KVK before spraying.</span></li>
+              <li><i data-lucide="image-off" width="13"></i><span>Attached plant photos are not analysed or uploaded.</span></li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="section-heading"><div><h2>Try a voice prompt</h2><p>Speak any of these to start.</p></div><a class="text-link" href="tools.html">All ten tools<i data-lucide="arrow-right" width="14"></i></a></div>
+        <div class="chips">
+          <span class="chip">My cotton leaves have holes</span>
+          <span class="chip">Paddy leaves are turning red</span>
+          <span class="chip">What is the chilli price in Guntur?</span>
+          <span class="chip">Will it rain this evening?</span>
+          <span class="chip">KCC interest for 50,000 rupees and 120 days</span>
+          <span class="chip">Two acres of paddy seed estimate</span>
+        </div>
+
+        <p class="disclaimer">Crop answers are rule-based examples; Evon v3.3 weights are not installed. Vision analysis and verified ICAR treatment rules are not connected. Verify every crop-care decision with your local KVK or agriculture officer.</p>
+      </div>
+    </main>
+  </div>
+
+  <dialog class="feature-dialog" id="featureDialog" aria-labelledby="featureTitle">
+    <div class="dialog-content">
+      <button class="dialog-close" id="closeFeatureDialog" aria-label="Close"><i data-lucide="x" width="16"></i></button>
+      <div class="dialog-kicker" id="featureStatus"></div>
+      <h2 id="featureTitle"></h2>
+      <p id="featureDescription"></p>
+      <div class="dialog-stack"><strong>Technical integration</strong><span id="featureStack"></span></div>
+      <button class="analyze voice-record" id="dialogVoiceButton"><i data-lucide="mic" width="15"></i>Speak about this tool</button>
+      <div id="featurePreview"></div>
+    </div>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
